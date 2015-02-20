@@ -1,0 +1,5 @@
+*.pyc
+.idea
+wikipedia-main-page.html
+venv
+
