@@ -4,6 +4,14 @@ A WSGI web service for rendering HTML to PDF using wkhtmltopdf.
 
 This work was inspired by https://github.com/openlabs/docker-wkhtmltopdf
 
+## TODO
+
+* Add a routing system
+* Use URL params to generate wkhtmltopdf cmd-line options
+* Add a cache system
+* Add a `Procfile` and `.buildpack` for a better Heroku compatibility
+* Add an auth system
+
 ## Running the Service localy
 
  1. Install python3 (virtualenv recommendend)
