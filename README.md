@@ -6,6 +6,7 @@ This work was inspired by https://github.com/openlabs/docker-wkhtmltopdf
 
 ## TODO
 
+* Add the javascript client
 * Add a routing system
 * Use URL params to generate wkhtmltopdf cmd-line options
 * Add a cache system
