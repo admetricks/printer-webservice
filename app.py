@@ -79,7 +79,7 @@ def header_filename(file_name):
 
 
 def wkhtmltopdf_cmd():
-    return ['wkhtmltopdf', '--dpi', '300', '--page-size', 'A4', '--enable-javascript', '--no-stop-slow-scripts', '--javascript-delay', '1000', '-q', '-', '-']
+    return ['/usr/bin/wkhtmltopdf.sh', '-q', '-d', '300', '-s', 'A4', '-', '-']
 
 
 if __name__ == '__main__':
