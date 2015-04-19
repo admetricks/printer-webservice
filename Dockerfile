@@ -1,6 +1,9 @@
 FROM        ubuntu:14.04
 
-RUN         apt-get update && apt-get install -y fonts-wqy-zenhei fonts-thai-tlwg fontconfig libfontconfig1 libfreetype6 libjpeg-turbo8 libx11-6 libxext6 libxrender1 wget xvfb python3 python3-pip xfonts-75dpi
+RUN         sed -i "/^# deb.*multiverse/ s/^# //" /etc/apt/sources.list
+RUN         apt-get update -qq && \
+            apt-get install -yqq fonts-wqy-zenhei fonts-thai-tlwg fontconfig libfontconfig1 libfreetype6 libjpeg-turbo8 libx11-6 libxext6 libxrender1 wget xvfb python3 python3-pip xfonts-75dpi flashplugin-installer && \
+            apt-get -yqq clean
 
 RUN         wget -O wkhtmltox.deb http://downloads.sourceforge.net/project/wkhtmltopdf/0.12.2.1/wkhtmltox-0.12.2.1_linux-trusty-amd64.deb
 RUN         dpkg -i wkhtmltox.deb
