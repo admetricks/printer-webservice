@@ -16,6 +16,7 @@ This work was inspired by https://github.com/openlabs/docker-wkhtmltopdf
 ## Running the Service localy
 
  1. Install python3 (virtualenv recommendend)
+    
 
  2. Install `wkhtmltopdf` [here](http://wkhtmltopdf.org/downloads.html)
 
@@ -25,6 +26,18 @@ This work was inspired by https://github.com/openlabs/docker-wkhtmltopdf
     pip3 install -r requirements.txt
     ```
 
+    on mac change the line 82 on app.py from 
+    
+    ```
+    return ['/usr/bin/wkhtmltopdf.sh', '-q', '-d', '300', '-s', 'A4', '-', '-']
+    ```
+    
+    to
+    
+    ```
+    return ['wkhtmltopdf', '-q', '-d', '300', '-s', 'A4', '-', '-']
+    ```
+    
  4. Run server:
 
     ```
