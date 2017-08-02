@@ -5,8 +5,10 @@ RUN         apt-get update -qq && \
             apt-get install -yqq fonts-wqy-zenhei fonts-thai-tlwg fontconfig libfontconfig1 libfreetype6 libjpeg-turbo8 libx11-6 libxext6 libxrender1 wget xvfb python3 python3-pip xfonts-75dpi flashplugin-installer && \
             apt-get -yqq clean
 
-RUN         wget -O wkhtmltox.deb http://downloads.sourceforge.net/project/wkhtmltopdf/0.12.2.1/wkhtmltox-0.12.2.1_linux-trusty-amd64.deb
-RUN         dpkg -i wkhtmltox.deb
+RUN         wget -O wkhtmltox.tar.xz https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.4/wkhtmltox-0.12.4_linux-generic-amd64.tar.xz && \
+            tar xf wkhtmltox.tar.xz && \
+            mv wkhtmltox/bin/wkhtmltopdf  /usr/local/bin/wkhtmltopdf
+
 ADD         wkhtmltopdf.sh /usr/bin/wkhtmltopdf.sh
 
 RUN         useradd printer_service
