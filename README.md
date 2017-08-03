@@ -66,16 +66,18 @@ cat sample.html | curl -F html=@- http://localhost:5000 > output.pdf
 
 ## Running as Docker Container
 
-To run the service as a Docker container:
+To run the service as a Docker container with compose:
 
- 1. Build the Docker image:
+ ```sh
+docker-compose up -d
+```
 
-    ```sh
-    docker build -t printer-webservice .
-    ```
+Or build it and run it manually:
 
- 2. Run a Docker container (binding to port 5000):
+```sh
+docker build -t printer-webservice .
+```
 
-    ```sh
-    docker run -p 5000:8080 printer-webservice
-    ```
+```sh
+docker run -p 5000:8080 printer-webservice
+```

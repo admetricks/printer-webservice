@@ -1,3 +1,3 @@
 #!/bin/bash
 
-xvfb-run --server-args="-screen 0, 1024x768x24" /usr/local/bin/wkhtmltopdf $*
+xvfb-run --server-args="-screen 0, 1024x768x24" /usr/local/bin/wkhtmltopdf --use-xserver --viewport-size 1024x768 $*
