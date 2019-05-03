@@ -1,25 +1,39 @@
 #! /usr/bin/env python
-import shutil
 import io
-from subprocess          import Popen, PIPE
-from werkzeug.wsgi       import wrap_file
+import json
+import shutil
+
+from subprocess import Popen, PIPE
+from werkzeug.wsgi import wrap_file
 from werkzeug.exceptions import MethodNotAllowed, BadRequest
-from werkzeug.wrappers   import Request, Response
+from werkzeug.wrappers import Request, Response
+
 
 @Request.application
 def application(request):
-    if is_valid_request(request):
-        if is_valid_file_request(request):
-            html_file  = request.files['html']
-            pdf_file   = generate_pdf(html_file)
-            response   = build_response(request, pdf_file)
+    if request.method == 'OPTIONS' and is_valid_origin(request):
+        response = Response()
+        response.headers.add(
+            'Access-Control-Allow-Origin', request.headers.get('origin'))
+        response.headers.add('Access-Control-Allow-Methods', 'POST')
+        response.headers.add(
+            'Access-Control-Allow-Headers', 'Content-Type, Authorization')
+        return response
 
-        elif is_valid_form_request(request):
-            html_param = request.form.get('html').encode()
-            html_file  = io.BytesIO(html_param)
-            file_name  = request.form.get('filename')
-            pdf_file   = generate_pdf(html_file)
-            response   = build_post_response(request, pdf_file, file_name)
+    if is_valid_request(request):
+        data = get_data(request)
+
+        if is_valid_file_request(request):
+            html_file = request.files['html']
+            pdf_file = generate_pdf(html_file)
+            response = build_response(request, pdf_file)
+
+        elif is_valid_post_request(request):
+            html_param = data.get('html').encode()
+            html_file = io.BytesIO(html_param)
+            file_name = data.get('filename')
+            pdf_file = generate_pdf(html_file)
+            response = build_post_response(request, pdf_file, file_name)
 
         else:
             response = BadRequest('html and filename params are required')
@@ -30,20 +44,44 @@ def application(request):
     return response
 
 
+def get_data(request):
+    if request.form.get('filename'):
+        return request.form
+    else:
+        data = json.loads(request.data)
+        if data.get('filename'):
+            return data
+    return None
+
+
 def is_valid_request(request):
-    return request.method == 'POST'
+    is_valid = request.method == 'POST'
+    return is_valid
 
 
-def is_valid_form_request(request):
-    html_param     = request.form.get('html')
-    filename_param = request.form.get('filename')
+def is_valid_post_request(request):
+    data = get_data(request)
+    if not data:
+        return False
 
-    return  html_param and filename_param
+    html_param = data.get('html')
+    filename_param = data.get('filename')
+    return html_param and filename_param
+
+
+def is_valid_origin(request):
+    origin = request.headers.get('origin')
+
+    if origin == 'https://localhost:3100' or origin == "http://localhost:3100":
+        return True
+
+    # if origin includes "web.admetricks.com"
+
+    return False
 
 
 def is_valid_file_request(request):
     html_param = request.files.get('html')
-
     return html_param
 
 
