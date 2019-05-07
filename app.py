@@ -1,9 +1,11 @@
 #! /usr/bin/env python
 import io
 import json
+import os
 import shutil
 
 from subprocess import Popen, PIPE
+from urllib.parse import urlparse
 from werkzeug.wsgi import wrap_file
 from werkzeug.exceptions import MethodNotAllowed, BadRequest
 from werkzeug.wrappers import Request, Response
@@ -39,19 +41,13 @@ def application(request):
             response = BadRequest('html and filename params are required')
 
     else:
-        response = BadRequest('Expect a POST request')
+        response = MethodNotAllowed(['POST'], 'Expect a POST request')
 
     return response
 
 
 def get_data(request):
-    if request.form.get('filename'):
-        return request.form
-    else:
-        data = json.loads(request.data)
-        if data.get('filename'):
-            return data
-    return None
+    return json.loads(request.data) if request.data else request.form
 
 
 def is_valid_request(request):
@@ -70,14 +66,8 @@ def is_valid_post_request(request):
 
 
 def is_valid_origin(request):
-    origin = request.headers.get('origin')
-
-    if origin == 'https://localhost:3100' or origin == "http://localhost:3100":
-        return True
-
-    # if origin includes "web.admetricks.com"
-
-    return False
+    white_list = [uri.strip() for uri in os.getenv('PRINTER_WHITELIST', '').split(',')]
+    return request.headers.get('origin') in white_list
 
 
 def is_valid_file_request(request):
@@ -95,11 +85,7 @@ def generate_pdf(html_file):
 
 
 def build_response(request, pdf_file):
-    response = Response(wrap_file(request.environ, pdf_file))
-
-    response.headers.add('Access-Control-Allow-Origin', '*')
-    response.headers.add('content-type', 'application/pdf')
-
+    response = Response(wrap_file(request.environ, pdf_file), content_type="application/pdf")
     return response
 
 
@@ -122,6 +108,11 @@ def wkhtmltopdf_cmd():
 
 if __name__ == '__main__':
     from werkzeug.serving import run_simple
+
+    PORT = os.getenv('PORT', 5000)
+    DEBUG = os.getenv('DEBUG', False) == 'True'
+    RELOADER = os.getenv('RELOADER', False) == 'True'
+
     run_simple(
-        '127.0.0.1', 5000, application, use_debugger=True, use_reloader=True
+        '127.0.0.1', PORT, application, use_debugger=DEBUG, use_reloader=RELOADER
     )
