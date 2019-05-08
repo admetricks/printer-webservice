@@ -66,8 +66,15 @@ def is_valid_post_request(request):
 
 
 def is_valid_origin(request):
-    white_list = [uri.strip() for uri in os.getenv('PRINTER_WHITELIST', '').split(',')]
-    return request.headers.get('origin') in white_list
+    ENV = os.getenv('PRINTER_WHITELIST', '')
+
+    if ENV == '*':
+        return True
+
+    if not ENV:
+        return False
+
+    return request.headers.get('origin') in [uri.strip() for uri in ENV.split(',')]
 
 
 def is_valid_file_request(request):
