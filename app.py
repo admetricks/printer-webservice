@@ -101,6 +101,8 @@ def build_post_response(request, pdf_file, file_name):
 
     response.headers.add('Content-Disposition', header_filename(file_name))
     response.headers.add('Content-Transfer-Encoding', 'binary')
+    response.headers.add(
+            'Access-Control-Allow-Origin', request.headers.get('origin'))
 
     return response
 
