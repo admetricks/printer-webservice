@@ -123,6 +123,5 @@ if __name__ == '__main__':
     RELOADER = os.getenv('RELOADER', False) == 'True'
 
     run_simple(
-        '127.0.0.1', int(PORT), application, use_debugger=DEBUG, use_reloader=RELOADER,
-        ssl_context=('localssl.crt', 'localssl.key')
+        '127.0.0.1', int(PORT), application, use_debugger=DEBUG, use_reloader=RELOADER
     )
