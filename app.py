@@ -47,7 +47,7 @@ def application(request):
 
 
 def get_data(request):
-    return json.loads(request.data) if request.data else request.form
+    return json.loads(str(request.data, 'utf-8')) if request.data else request.form
 
 
 def is_valid_request(request):
@@ -123,5 +123,6 @@ if __name__ == '__main__':
     RELOADER = os.getenv('RELOADER', False) == 'True'
 
     run_simple(
-        '127.0.0.1', PORT, application, use_debugger=DEBUG, use_reloader=RELOADER
+        '127.0.0.1', int(PORT), application, use_debugger=DEBUG, use_reloader=RELOADER,
+        ssl_context=('localssl.crt', 'localssl.key')
     )
