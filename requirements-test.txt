@@ -1,2 +1,2 @@
-Werkzeug==0.15.3
+Werkzeug==0.15.5
 locustio==0.7.1
